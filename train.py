@@ -7,7 +7,7 @@ from data import CelebData, get_data
 from modeling import VAE
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-BATCHES = 128
+BATCHES = 256
 EPOCHS  = 30
 
 
