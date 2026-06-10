@@ -25,11 +25,10 @@ data/
 *.safetensors
 
 # Generated outputs
-samples/
+samples/[0-9]*.png   # ignore individual numbered samples
 outputs/
 runs/
 checkpoints/
-*.png
 *.jpg
 *.jpeg
 *.gif

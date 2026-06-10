@@ -4,8 +4,23 @@
 
 ---
 
+## Generated Samples
+
+10 faces sampled by drawing $z \sim \mathcal{N}(0, I)$ and passing through the decoder — no encoder involved at inference time.
+
+![VAE Generated Samples — 10 faces from CelebA](samples/grid.png)
+
+> [!NOTE]
+> **Disclaimer:** This model was trained for only **30 epochs** as a proof of concept. The generated faces may appear blurry or lack fine detail — this is expected behaviour for a vanilla convolutional VAE at low epoch counts. If you want sharper, more realistic results consider:
+> - **Increasing epochs** (100–200+) to let the model converge more fully
+> - **Tuning the KL weight** (β-VAE: `loss = recon + β * kl` with β < 1) to prioritise reconstruction quality
+> - **Switching to a stronger architecture** such as a [VQ-VAE](https://arxiv.org/abs/1711.00937) or a [VAE-GAN](https://arxiv.org/abs/1512.09300) for perceptually sharper outputs
+
+---
+
 ## Table of Contents
 
+- [Generated Samples](#generated-samples)
 - [Theoretical Foundation](#theoretical-foundation)
   - [The Manifold Hypothesis](#1-the-manifold-hypothesis)
   - [The Reparameterization Trick](#2-the-reparameterization-trick)
@@ -16,6 +31,7 @@
 - [References](#references)
 
 ---
+
 
 ## Theoretical Foundation
 
