@@ -25,13 +25,20 @@ class CelebData(NamedTuple):
 
 
 def get_celb_split(batch_size: int, split: str, img_size: int, root: str = ROOT):
+    is_train = split == 'train'
     dataset = CelebA(
         root=root,
         split=split,
         transform=CelebVAETransform(img_size),
         download=True,
     )
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    dataloader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=is_train,       # BUG FIX: val/test must not be shuffled
+        num_workers=4,          # parallel data loading
+        pin_memory=True,        # faster CPU→GPU transfer
+    )
     return dataloader
 
 

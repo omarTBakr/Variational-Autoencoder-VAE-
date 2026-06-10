@@ -34,9 +34,11 @@ class VAE(nn.Module):
         self.fc_logvar = nn.Linear(512 * 2 * 2 , latent_size)
         self.decoder = nn.Sequential(
 
-            # write down the mirror of the encoder 
-            nn.Linear(in_features=latent_size, out_features=512 * 2 * 2),  
-            nn.Unflatten(dim=1,unflattened_size=(512, 2, 2)), 
+            # project latent vector back to spatial feature map
+            nn.Linear(in_features=latent_size, out_features=512 * 2 * 2),
+            nn.ReLU(True),  # BUG FIX: activation was missing after Linear projection
+            nn.Unflatten(dim=1, unflattened_size=(512, 2, 2)),
+
             nn.ConvTranspose2d(in_channels=512, out_channels=256, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(num_features=256),
             nn.ReLU(True),
@@ -57,14 +59,18 @@ class VAE(nn.Module):
             nn.Sigmoid(),
         )
     def reparameterize(self, mu, logvar):
-        if  not self.training:
-            return mu 
+        if not self.training:
+            return mu
+        # Clamp logvar to prevent exp() overflow → NaN/Inf during training
+        logvar = torch.clamp(logvar, min=-10, max=10)
         std = torch.exp(0.5 * logvar)
         eps = torch.randn_like(std)
         return mu + eps * std
         
     def vae_loss(self, x, recon_x, mu, logvar):
         """Returns (total_loss, recon_loss, kl_loss) as separate tensors."""
+        # Clamp logvar here too for the KL computation
+        logvar = torch.clamp(logvar, min=-10, max=10)
         recon = torch.nn.functional.binary_cross_entropy(recon_x, x, reduction='sum')
         kl    = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
         return recon + kl, recon, kl
@@ -77,8 +83,11 @@ class VAE(nn.Module):
         recon_x = self.decoder(z)
         return recon_x, mu, logvar
     
-    def generate(self , z): 
-        return self.decoder(z)
+    def generate(self, z):
+        """Generate images from latent vectors. Always runs in eval mode."""
+        self.eval()
+        with torch.no_grad():
+            return self.decoder(z)
         
             
 

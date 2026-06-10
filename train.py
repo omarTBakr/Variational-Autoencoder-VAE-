@@ -7,7 +7,7 @@ from data import CelebData, get_data
 from modeling import VAE
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-BATCHES = 16
+BATCHES = 128
 EPOCHS  = 30
 
 
@@ -58,10 +58,11 @@ def run_epoch(model: VAE, loader, optimizer=None) -> tuple[float, float]:
 
 def generate_nsamples(model: VAE, samples: int) -> None:
     os.makedirs("samples", exist_ok=True)
-    model.eval()
+    # BUG FIX: use model.latent_size instead of hardcoded 200
     with torch.no_grad():
         for i in range(samples):
-            img = model.generate(torch.randn(1, 200).to(device))
+            z = torch.randn(1, model.latent_size).to(device)
+            img = model.generate(z)
             img = img.cpu().numpy()[0]
             img = (img * 255).astype(np.uint8).transpose(1, 2, 0)
             Image.fromarray(img).save(f"samples/{i}.png")
