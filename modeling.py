@@ -71,7 +71,8 @@ class VAE(nn.Module):
         """Returns (total_loss, recon_loss, kl_loss) as separate tensors."""
         # Clamp logvar here too for the KL computation
         logvar = torch.clamp(logvar, min=-10, max=10)
-        recon = torch.nn.functional.binary_cross_entropy(recon_x, x, reduction='sum')
+        # recon = torch.nn.functional.binary_cross_entropy(recon_x, x, reduction='sum')
+        recon = torch.nn.functional.mse_loss(recon_x, x, reduction='sum')
         kl    = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
         return recon + kl, recon, kl
     
