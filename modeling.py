@@ -63,10 +63,11 @@ class VAE(nn.Module):
         eps = torch.randn_like(std)
         return mu + eps * std
         
-    def vae_loss(self, x, recon_x, mu, logvar) -> torch.Tensor:
-        BCE = torch.nn.functional.binary_cross_entropy(recon_x, x, reduction='sum')
-        KLD = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
-        return BCE + KLD
+    def vae_loss(self, x, recon_x, mu, logvar):
+        """Returns (total_loss, recon_loss, kl_loss) as separate tensors."""
+        recon = torch.nn.functional.binary_cross_entropy(recon_x, x, reduction='sum')
+        kl    = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+        return recon + kl, recon, kl
     
     def forward(self, x) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         x = self.encoder(x)
