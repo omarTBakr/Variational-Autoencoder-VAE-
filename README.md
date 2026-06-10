@@ -4,6 +4,29 @@
 
 ---
 
+## Why This Repo?
+
+VAEs are not the hottest topic right now — but they are a **foundational gateway** to understanding the entire landscape of modern generative models:
+
+```
+VAE  →  VQ-VAE  →  Latent Diffusion  →  Stable Diffusion
+                              ↓
+                    Multimodal Encoders (CLIP, etc.)
+```
+
+Understanding the **ELBO** deeply makes everything downstream click much faster.
+
+Beyond the code, this repo ships two learning assets that most VAE repos skip:
+
+| Asset | Format | What's inside |
+|---|---|---|
+| [`Variational Autoencoders (VAEs).md`](./Variational%20Autoencoders%20%28VAEs%29.md) | Obsidian Markdown | Full ELBO + KL derivations, intuition-first with just enough math, recall exercises |
+| [`Variational Autoencoders (VAEs).pdf`](./Variational%20Autoencoders%20%28VAEs%29.pdf) | PDF | Same notes, rendered — no Obsidian needed |
+
+> **Obsidian users:** drop the `.md` file directly into your vault and start annotating.
+
+---
+
 ## Generated Samples
 
 10 faces sampled by drawing $z \sim \mathcal{N}(0, I)$ and passing through the decoder — no encoder involved at inference time.
@@ -20,6 +43,7 @@
 
 ## Table of Contents
 
+- [Why This Repo?](#why-this-repo)
 - [Generated Samples](#generated-samples)
 - [Theoretical Foundation](#theoretical-foundation)
   - [The Manifold Hypothesis](#1-the-manifold-hypothesis)
